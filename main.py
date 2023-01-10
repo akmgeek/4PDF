@@ -1,12 +1,9 @@
-
-from fileinput import filename
 from ui import Ui_MainWindow
-from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
-from PyQt5.QtWidgets import QMainWindow,QApplication, QFileDialog, QTableWidgetItem, QHeaderView, QPushButton
-from PyPDF2 import PdfFileMerger, PdfMerger
-import qpageview
+from PyQt5.QtWidgets import QMainWindow,QApplication, QFileDialog, QTableWidgetItem,QPushButton, QMessageBox
+from PyPDF2 import PdfFileMerger, PdfFileWriter, PdfFileReader
+import os
+import qdarktheme
 
 class main_ui(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -15,129 +12,142 @@ class main_ui(QMainWindow, Ui_MainWindow):
         self.showMaximized()
         self.count = 0
         self.pdfs = []
-        header = self.tableWidget.horizontalHeader()       
-        header.setSectionResizeMode(0, QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        
 
-        self.view = QWebEngineView()
-        settings = self.view.settings()
-        settings.setAttribute(QWebEngineSettings.PluginsEnabled, True)
-        settings.setAttribute(QWebEngineSettings.PdfViewerEnabled, True)
-        self.create_webview(filename)
-        
         self.add_file_bttn.clicked.connect(self.add_pdf_file)
-        self.merge_bttn.clicked.connect(self.on_merge_bttn)
-        self.start_bttn.clicked.connect(self.on_merge_start)
-        self.home_bttn.clicked.connect(self.go_home)
-        # self.view_bttn.clicked.connect(self.on_view_bttn_clicked)
+        self.merge_bttn.clicked.connect(self.merge_pdf_file_th)
+        self.lightMode_rb.toggled.connect(self.change_theme)
+        self.darkMode_rb.toggled.connect(self.change_theme)
+        self.browserFile_bttn.clicked.connect(self.select_pdf_file)
+        self.split_bttn.clicked.connect(self.do_split)
+        self.split_page_gb.toggled.connect(self.uncheck_range)
+        self.split_range_gb.toggled.connect(self.uncheck_page)
 
     def add_pdf_file(self):
         filename, _ = QFileDialog.getOpenFileName(None, filter="PDF (*.pdf)")
         if not filename:
             print("please select the .pdf file")
+        else:
+            file_name = filename.split("/")
+            file_name = file_name[len(file_name)-1]
+            file_size = self.getsize(filename)
+            page_num = self.getpages(filename)
+            
+            self.create_bttns()    
+            self.tableWidget.insertRow(self.count)
+            self.tableWidget.setItem(self.count, 0, QTableWidgetItem(str(file_name)))
+            self.tableWidget.setItem(self.count, 1, QTableWidgetItem(str(file_size)))
+            self.tableWidget.setItem(self.count, 2, QTableWidgetItem(str(page_num)))
+            self.tableWidget.setItem(self.count, 3, QTableWidgetItem(str('All')))
+            self.tableWidget.setCellWidget(self.count, 4, self.delete_bttn)
+            
+            self.count = +1
+            self.pdfs.append(filename)
+            print(self.pdfs)
 
-        print(filename.split("/"))
-        file_name = filename.split("/")
-        file_name = file_name[len(file_name)-1]
-        print(file_name)
+    def select_pdf_file(self):
+        filename, _ = QFileDialog.getOpenFileName(None, filter="PDF (*.pdf)")
+        if not filename:
+            print("please select the .pdf file")
+        else:
+            self.pdf_path_split.setText(filename)
+            self.split_inputFile = filename
+            page_nums = self.getpages(filename)
+            file_size = self.getsize(filename)
+            self.label_3.setText(f'Total number of pages: {page_nums}. File size:{file_size}')
+    
+    def uncheck_page(self):
+            self.split_page_gb.setChecked(False)
+    def uncheck_range(self):
+            self.split_range_gb.setChecked(False)
+
+    def do_split(self):
+        reader = PdfFileReader(self.split_inputFile)
+        writer = PdfFileWriter()
+        if self.split_page_gb.isChecked()==True:
+            writer.addPage(reader.getPage(int(self.page_no.text())))
         
-        self.create_bttns()    
-        self.tableWidget.insertRow(self.count)
-        self.tableWidget.setItem(self.count, 0, QTableWidgetItem(str(file_name)))
-        self.tableWidget.setCellWidget(self.count, 1, self.view_bttn)
-        self.tableWidget.setCellWidget(self.count, 2, self.delete_bttn)
-        
-        self.count = +1
-        self.pdfs.append(filename)
-        print(self.pdfs)
+        elif self.split_range_gb.isChecked()==True:
+            pageFrom = int(self.page_from.text())
+            pageTo = int(self.page_to.text())
 
-    def create_webview(self,filename):
-        # view = QWebEngineView()
-        # url = QUrl.fromLocalFile(filename)
-        # view.load(url)
-        # view.setGeometry(100, 50, 400, 300)
+            for page in range(pageFrom-1,pageTo):
+                writer.addPage(reader.getPage(page))
 
-        # self.view.load(QUrl.fromUserInput(filename))
-        self.gridLayout_6.addWidget(self.view)
+        filename = QFileDialog.getSaveFileName(self, 'Save File',"","PDF Files(*.pdf);;")
+        with open(filename[0], 'wb') as output:
+            writer.write(output)
+        # self.statusBar.showMessage("File Splitted and Saved Successfully !")
 
-        # v = qpageview()
-        # v = qpageview.View()
-        # self.gridLayout_4.addWidget(v)
-        # v.loadPdf("../osi.pdf")
-        # v.show()
-        
+    # pdf INFO
+    def getsize(self, filename):
+        size = os.path.getsize(filename)*0.0001      # byte to kb
+        if size>999:
+            size = str(round(size*0.0001,1))+'mb'     
+        else:
+            size = str(round(size,1))+'kb'           # change kilobyte(kb) to megabyte(mb)
+        return size
+
+    def getpages(self, filename):
+        reader = PdfFileReader(filename)
+        return reader.getNumPages()
+
+    # create remove button in table for each pdf
+
     def create_bttns(self):
-        self.view_bttn = QPushButton()
-        self.view_bttn.setIcon(QIcon('icons/eye.png'))
-        self.view_bttn.clicked.connect(self.on_view_bttn_clicked)
         self.delete_bttn = QPushButton()
         self.delete_bttn.setIcon(QIcon('icons/delete.png'))
         self.delete_bttn.clicked.connect(self.on_delete_bttn_clicked)
-    
-    def on_merge_start(self):       
+
+    def merge_pdf_file_th(self):
+        if self.count==0:
+            QMessageBox.information(self, 'Merge Info', 'Please add files before merge.')
+        else:
+            import threading
+            merge_th = threading.Thread(target=self.merge_pdf_file)
+            merge_th.start()
+        # self.merge_pdf_file()
+
+    # start merging pdf file.
+    def merge_pdf_file(self):
         merger = PdfFileMerger()
         for pdf in self.pdfs:
             merger.append(pdf)
-        #     merger.write("result.pdf")
-        #     merger.close()
-        name = QFileDialog.getSaveFileName(self, 'Save File',"","PDF Files(*.pdf);;")
-            # writing combined pdf to output pdf file
-        with open(name, 'wb') as f:
-            merger.write(f)
-            merger.close()
-        # file = open(name,'wb')
-        # file.write()
-        # # merger(PdfFileMerger(open(name,"w")).write(k))
-        # file.close()
-        
-        # merger.write("result.pdf")
-        # merger.close()
-    def on_merge_bttn(self):
-        self.stackedWidget.setCurrentIndex(0)
-    def go_home(self):
-        self.stackedWidget.setCurrentIndex(1)
-    
-    def on_view_bttn_clicked(self):
-        button = self.sender()
-        if button:
-            row = self.tableWidget.indexAt(button.pos()).row()
-            self.view.load(QUrl.fromUserInput(str(self.pdfs[row])))
-            # del_row = row + 1
-            # print("row value" ,del_row)
-            # self.webView2.page().runJavaScript("rowValue('"+str(del_row)+"');", self.ready)
-            
-            # self.tableWidget.removeRow(row)
-            # self.count -= 1
+        filename = QFileDialog.getSaveFileName(self, 'Save File',"","PDF Files(*.pdf);;")
+        print(filename[0])
+        output = open(filename[0],'wb')
+        merger.write(output)
+        merger.close()
+        output.close()
 
+    # remove pdf from table
     def on_delete_bttn_clicked(self):
         try:
             button = self.sender()
             if button:
                 row = self.tableWidget.indexAt(button.pos()).row()
-                # del_row = row + 1
-                # print("row value" ,del_row)
-                # self.webView2.page().runJavaScript("rowValue('"+str(del_row)+"');", self.ready)
-                
                 self.tableWidget.removeRow(row)
                 self.pdfs.pop(row)
                 self.count -= 1
         except:
             print("Deletion failed !")
-        # def save_file(self):
 
-    def file_save(self):
-        name = QFileDialog.getSaveFileName(self, 'Save File')
-        file = open(name,'w')
-        text = self.textEdit.toPlainText()
-        file.write(text)
-        file.close()
-        pass
+    # SETTING
 
+    # Change theme
+    def change_theme(self):
+        if self.lightMode_rb.isChecked()==True:
+            app.setStyleSheet(qdarktheme.load_stylesheet("light"))
+            self.darkMode_rb.setChecked(False)
+
+        elif self.darkMode_rb.isChecked()==True:
+            app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
+            self.lightMode_rb.setChecked(False)
+
+    
 if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
+    app.setStyleSheet(qdarktheme.load_stylesheet("light"))
     four_pdf = main_ui()
     four_pdf.show()
     sys.exit(app.exec_())
