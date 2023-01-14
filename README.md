@@ -22,7 +22,7 @@ _Extract text from your pdf file._
 ![image](https://user-images.githubusercontent.com/106646158/212492733-48ff92f7-2462-476e-8072-110c69b51372.png)
 _Dark Mode & Light Mode_
 
-https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
+
 ## 🔗 Download 
 
 [![Run](https://img.shields.io/badge/start_download-1DA1F2?style=for-the-badge&&logoColor=white)](https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
