@@ -2,6 +2,13 @@
 
 **4PDF** is a easy pdf tool with simple and clean UI for better User Experience. Check-it out.
 
+https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
+## 🔗 Download 
+
+[![Run](https://img.shields.io/badge/click_to_run-1DA1F2?style=for-the-badge&&logoColor=white)](https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
+)
+
+
 ![image](https://user-images.githubusercontent.com/106646158/212492563-19e0ee12-938f-439e-9545-b9395243376f.png)
 _Merge your pdf file with so ease._
 
@@ -14,6 +21,13 @@ _Extract text from your pdf file._
 ![image](https://user-images.githubusercontent.com/106646158/212492715-94e62df2-fdec-4c19-8f39-77a020c2c090.png) 
 ![image](https://user-images.githubusercontent.com/106646158/212492733-48ff92f7-2462-476e-8072-110c69b51372.png)
 _Dark Mode & Light Mode_
+
+https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
+## 🔗 Download 
+
+[![Run](https://img.shields.io/badge/click_to_run-1DA1F2?style=for-the-badge&&logoColor=white)](https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
+)
+
 
 _Many more will come :) 
 Work is in progress_
