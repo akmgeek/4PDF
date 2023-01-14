@@ -2,10 +2,10 @@
 
 **4PDF** is a easy pdf tool with simple and clean UI for better User Experience. Check-it out.
 
-https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
+
 ## 🔗 Download 
 
-[![Run](https://img.shields.io/badge/click_to_run-1DA1F2?style=for-the-badge&&logoColor=white)](https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
+[![Run](https://img.shields.io/badge/start_download-1DA1F2?style=for-the-badge&&logoColor=white)](https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
 )
 
 
@@ -25,7 +25,7 @@ _Dark Mode & Light Mode_
 https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
 ## 🔗 Download 
 
-[![Run](https://img.shields.io/badge/click_to_run-1DA1F2?style=for-the-badge&&logoColor=white)](https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
+[![Run](https://img.shields.io/badge/start_download-1DA1F2?style=for-the-badge&&logoColor=white)](https://github.com/akmgeek/4PDF/releases/download/v1.0/4PDF.Installer.v1.0.exe
 )
 
 
