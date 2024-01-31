@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>assets/icons/homeIcon.png</file>
+    <file>assets/icons/settingIcon.png</file>
+  </qresource>
+  <qresource prefix="images">
+    <file>assets/images/4751965.jpg</file>
+  </qresource>
+</RCC>
